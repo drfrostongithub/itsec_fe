@@ -1,20 +1,24 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
+import useAuthStore from "../store/useAuthStore";
 // import { API_BASE_URL } from "../api";
 
-const AuthBox = ({ onLogin }) => {
+const AuthBox = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   const handleAuth = async () => {
     const url = isLogin ? `$API_BASE_URL/login` : `$API_BASE_URL/register`;
     try {
       const response = await axios.post(url, { username, password });
       if (isLogin) {
-        onLogin(response.data.token);
+        setAccessToken(response.data.token);
+        sessionStorage.setItem("access_token", response.data.token);
+        // onLogin(response.data.token);
       } else {
         alert("Registration successful. Please log in.");
         setIsLogin(true);
