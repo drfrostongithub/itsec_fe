@@ -1,31 +1,15 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
-import axios from "axios";
 import useAuthStore from "../store/useAuthStore";
-// import { API_BASE_URL } from "../api";
 
 const AuthBox = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const error = useAuthStore((state) => state.error);
+  const handleAuth = useAuthStore((state) => state.handleAuth);
 
-  const handleAuth = async () => {
-    const url = isLogin ? `$API_BASE_URL/login` : `$API_BASE_URL/register`;
-    try {
-      const response = await axios.post(url, { username, password });
-      if (isLogin) {
-        setAccessToken(response.data.token);
-        sessionStorage.setItem("access_token", response.data.token);
-        // onLogin(response.data.token);
-      } else {
-        alert("Registration successful. Please log in.");
-        setIsLogin(true);
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || "An error occurred");
-    }
+  const handleSubmit = () => {
+    handleAuth(isLogin, username, password);
   };
 
   return (
@@ -48,7 +32,7 @@ const AuthBox = () => {
         className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <button
-        onClick={handleAuth}
+        onClick={handleSubmit}
         className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition"
       >
         {isLogin ? "Login" : "Register"}
@@ -65,11 +49,6 @@ const AuthBox = () => {
       </p>
     </div>
   );
-};
-
-// Prop validation
-AuthBox.propTypes = {
-  onLogin: PropTypes.func.isRequired,
 };
 
 export default AuthBox;
