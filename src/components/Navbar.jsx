@@ -4,7 +4,6 @@ function Navbar() {
   const logout = useAuthStore((state) => state.logout);
   const accessToken = sessionStorage.getItem("accessToken");
   const user = useAuthStore((state) => state.user);
-  console.log(user);
 
   return (
     <nav className="bg-gray-800 p-4">
